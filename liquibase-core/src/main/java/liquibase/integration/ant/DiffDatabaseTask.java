@@ -136,7 +136,7 @@ public class DiffDatabaseTask extends BaseLiquibaseTask {
 
             liquibase = createLiquibase();
 
-            referenceDatabase = createDatabaseObject(getReferenceDriver(), getReferenceUrl(), getReferenceUsername(), getReferencePassword(), getReferenceDefaultCatalogName(), getReferenceDefaultSchemaName(), getDatabaseClass());
+            referenceDatabase = createDatabaseObject(getReferenceDriver(), getReferenceUrl(), getReferenceUsername(), getReferencePassword(), getReferenceDefaultCatalogName(), getReferenceDefaultSchemaName(), getOutputDefaultCatalog(), getDatabaseClass());
 
 
 
