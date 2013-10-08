@@ -161,7 +161,16 @@ public class Liquibase {
     		changeLog.validate(database, contexts);
     		ChangeLogIterator changeLogIterator = getStandardChangelogIterator(contexts, changeLog);
     		
-    		changeLogIterator.run(new VisualizeVisitor(database), database);
+    		StringBuilder graphVizContentBuilder = new StringBuilder();
+    		graphVizContentBuilder.append("digraph LiquibaseVisualChangelog {\n");
+    		
+    		changeLogIterator.run(new VisualizeVisitor(database, graphVizContentBuilder), database);
+    		
+    		graphVizContentBuilder.append("}\n");
+    		
+    		System.out.println(graphVizContentBuilder.toString());
+    		
+    		
     	} finally {
     		try {
     			database.setObjectQuotingStrategy(ObjectQuotingStrategy.LEGACY);

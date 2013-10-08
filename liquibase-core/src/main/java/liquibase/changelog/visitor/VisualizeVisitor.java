@@ -23,14 +23,17 @@ public class VisualizeVisitor implements ChangeSetVisitor {
     
     private ChangeExecListener execListener;
 
-    public VisualizeVisitor(Database database) {
+	private StringBuilder graphVizContentBuilder;
+
+    public VisualizeVisitor(Database database, StringBuilder graphVizContentBuilder) {
         this.database = database;
+        this.graphVizContentBuilder = graphVizContentBuilder;
     }
     
-    public VisualizeVisitor(Database database, ChangeExecListener execListener) {
-      this(database);
-      this.execListener = execListener;
-    }
+//    public VisualizeVisitor(Database database, ChangeExecListener execListener) {
+//      this(database);
+//      this.execListener = execListener;
+//    }
 
     @Override
     public Direction getDirection() {
@@ -80,6 +83,7 @@ public class VisualizeVisitor implements ChangeSetVisitor {
         	if (referencedTableName != null && baseTableName != null)
         	{
         		System.out.println(baseTableName + " -> " + referencedTableName);
+        		graphVizContentBuilder.append("\t" + baseTableName + " -> " + referencedTableName + "\n");
         	}
 		}
         
