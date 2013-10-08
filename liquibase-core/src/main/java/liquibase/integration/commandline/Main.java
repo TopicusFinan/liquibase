@@ -302,7 +302,8 @@ public class Main {
                 || "status".equalsIgnoreCase(command)
                 || "validate".equalsIgnoreCase(command)
                 || "changeLogSync".equalsIgnoreCase(command)
-                || "changeLogSyncSql".equalsIgnoreCase(command);
+                || "changeLogSyncSql".equalsIgnoreCase(command)
+                || "visualize".equalsIgnoreCase(command);
     }
 
     private boolean isCommand(String arg) {
@@ -338,7 +339,8 @@ public class Main {
                 || "changelogSync".equalsIgnoreCase(arg)
                 || "changelogSyncSQL".equalsIgnoreCase(arg)
                 || "markNextChangeSetRan".equalsIgnoreCase(arg)
-                || "markNextChangeSetRanSQL".equalsIgnoreCase(arg);
+                || "markNextChangeSetRanSQL".equalsIgnoreCase(arg)
+                || "visualize".equalsIgnoreCase(arg);
     }
 
     private boolean isNoArgCommand(String arg) {
@@ -357,7 +359,8 @@ public class Main {
                     || "changelogSync".equalsIgnoreCase(arg)
                     || "changelogSyncSQL".equalsIgnoreCase(arg)
                     || "markNextChangeSetRan".equalsIgnoreCase(arg)
-                    || "markNextChangeSetRanSQL".equalsIgnoreCase(arg);
+                    || "markNextChangeSetRanSQL".equalsIgnoreCase(arg)
+                    || "visualize".equalsIgnoreCase(arg);
     }
 
 
@@ -447,6 +450,8 @@ public class Main {
         stream.println("                                rollback support");
         stream.println(" generateChangeLog              Writes Change Log XML to copy the current state");
         stream.println("                                of the database to standard out");
+        stream.println(" visualize                      Writes visualization of Change Log XML in ");
+        stream.println("                                GraphViz format to standard out");
         stream.println("");
         stream.println("Diff Commands");
         stream.println(" diff [diff parameters]          Writes description of differences");
@@ -915,6 +920,8 @@ public class Main {
                     liquibase.futureRollbackSQL(Integer.parseInt(commandParams.iterator().next()), contexts, getOutputWriter());
                 } else if ("updateTestingRollback".equalsIgnoreCase(command)) {
                     liquibase.updateTestingRollback(contexts);
+                } else if ("visualize".equalsIgnoreCase(command)) {
+                	liquibase.visualize(contexts);
                 } else {
                     throw new CommandLineParsingException("Unknown command: " + command);
                 }

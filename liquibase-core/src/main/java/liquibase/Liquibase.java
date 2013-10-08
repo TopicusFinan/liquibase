@@ -145,6 +145,61 @@ public class Liquibase {
         }
     }
 
+    public void visualize(String contexts) throws LiquibaseException {
+		log.info("FinavateII: visualizeChangelog() was called");
+    	contexts = StringUtils.trimToNull(contexts);
+    	LockService lockService = getLockService();
+    	lockService.waitForLock();
+    	
+    	changeLogParameters.setContexts(StringUtils.splitAndTrim(contexts, ","));
+    	
+    	try {
+    		DatabaseChangeLog changeLog = ChangeLogParserFactory.getInstance().getParser(changeLogFile, resourceAccessor).parse(changeLogFile, changeLogParameters, resourceAccessor);
+    		
+    		checkDatabaseChangeLogTable(true, changeLog, contexts);
+    		
+    		changeLog.validate(database, contexts);
+    		ChangeLogIterator changeLogIterator = getStandardChangelogIterator(contexts, changeLog);
+    		
+    		changeLogIterator.run(new VisualizeVisitor(database), database);
+    	} finally {
+    		try {
+    			database.setObjectQuotingStrategy(ObjectQuotingStrategy.LEGACY);
+    			lockService.releaseLock();
+    		} catch (LockException e) {
+    			log.severe("Could not release lock", e);
+    		}
+    	}
+    }
+    
+    public void visualize(String contexts, Writer output) throws LiquibaseException {
+		log.info("FinavateII: visualizeChangelog() with writer was called");
+        contexts = StringUtils.trimToNull(contexts);
+        changeLogParameters.setContexts(StringUtils.splitAndTrim(contexts, ","));
+
+        Executor oldTemplate = ExecutorService.getInstance().getExecutor(database);
+        LoggingExecutor loggingExecutor = new LoggingExecutor(ExecutorService.getInstance().getExecutor(database), output, database);
+        ExecutorService.getInstance().setExecutor(database, loggingExecutor);
+
+        outputHeader("Update Database Script");
+
+        LockService lockService = getLockService();
+        lockService.waitForLock();
+
+        try {
+
+            visualize(contexts);
+
+            output.flush();
+        } catch (IOException e) {
+            throw new LiquibaseException(e);
+        } finally {
+            lockService.releaseLock();
+        }
+
+        ExecutorService.getInstance().setExecutor(database, oldTemplate);
+    }
+
 
     protected UpdateVisitor createUpdateVisitor() {
         return new UpdateVisitor(database, changeExecListener);
@@ -910,9 +965,4 @@ public class Liquibase {
     public boolean isIgnoreClasspathPrefix() {
         return ignoreClasspathPrefix;
     }
-
-	public void visualizeChangelog() {
-		log.info("FinavateII: visualizeChangelog() was called");
-		// TODO Auto-generated method stub
-	}
 }
