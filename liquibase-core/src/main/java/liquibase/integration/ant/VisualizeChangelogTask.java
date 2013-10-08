@@ -24,6 +24,7 @@ public class VisualizeChangelogTask extends BaseLiquibaseTask {
 
         Liquibase liquibase = null;
         try {
+        	
             liquibase = createLiquibase();
 
             if (isPromptOnNonLocalDatabase()
@@ -34,10 +35,8 @@ public class VisualizeChangelogTask extends BaseLiquibaseTask {
 
             Writer writer = createOutputWriter();
             if (writer == null) {
-
                 liquibase.visualize(getContexts());
             } else {
-
             	liquibase.visualize(getContexts(), writer);
                 writer.flush();
                 writer.close();
