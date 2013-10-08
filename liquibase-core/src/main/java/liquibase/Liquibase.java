@@ -910,4 +910,9 @@ public class Liquibase {
     public boolean isIgnoreClasspathPrefix() {
         return ignoreClasspathPrefix;
     }
+
+	public void visualizeChangelog() {
+		log.info("FinavateII: visualizeChangelog() was called");
+		// TODO Auto-generated method stub
+	}
 }
